@@ -35,7 +35,7 @@ def test_create_thumbnail_invalid_image_path(tmp_path):
     try:
         create_thumbnail(invalid_image_path, str(output_path))
         assert False, "Expected exception"
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         pass
 
 
@@ -96,5 +96,5 @@ def test_create_thumbnail_invalid_output_path():
     try:
         create_thumbnail(test_image_path, invalid_output_path)
         assert False, "Expected exception"
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         pass

@@ -47,5 +47,5 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             )
     except (OSError, ValueError) as e:
         logger.error("Error processing image: %s", str(e))
-        error_msg = "Error processing image: %s" % str(e)
+        error_msg = f"Error processing image: {str(e)}"
         return func.HttpResponse(error_msg, status_code=500)

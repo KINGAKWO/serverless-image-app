@@ -13,11 +13,15 @@ def test_main_success(monkeypatch):
     # Arrange
     test_dir = os.path.dirname(__file__)
     sample_path = '../ImageProcessingApp/test-input/sample.jpg'
-    test_image_path = os.path.join(test_dir, sample_path)
-    monkeypatch.setattr(function_app, "local_image_path", test_image_path)
+    test_image_path = os.path.join(
+        test_dir, sample_path
+    )
+    monkeypatch.setattr(
+        function_app, "local_image_path", test_image_path
+    )
 
     # Mock create_thumbnail to just copy the file
-    def mock_create_thumbnail(input_path, output_path, size=(128, 128)):
+    def mock_create_thumbnail(input_path, output_path):
         with open(input_path, "rb") as src, open(output_path, "wb") as dst:
             dst.write(src.read())
     monkeypatch.setattr(function_app, "create_thumbnail", mock_create_thumbnail)
@@ -56,8 +60,12 @@ def test_main_exception(monkeypatch):
     monkeypatch.setattr(function_app, "create_thumbnail", raise_exception)
     test_dir = os.path.dirname(__file__)
     sample_path = '../ImageProcessingApp/test-input/sample.jpg'
-    test_image_path = os.path.join(test_dir, sample_path)
-    monkeypatch.setattr(function_app, "local_image_path", test_image_path)
+    test_image_path = os.path.join(
+        test_dir, sample_path
+    )
+    monkeypatch.setattr(
+        function_app, "local_image_path", test_image_path
+    )
     req = MagicMock(spec=func.HttpRequest)
 
     # Act

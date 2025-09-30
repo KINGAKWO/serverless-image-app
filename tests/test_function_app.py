@@ -1,16 +1,19 @@
+"""Test module for the Azure Function app."""
+
 import os
 from unittest.mock import MagicMock
 
 import azure.functions as func
-import pytest
 
 from ImageProcessingApp import function_app
 
 
-def test_main_success(monkeypatch, tmp_path):
+def test_main_success(monkeypatch):
+    """Test successful image processing and thumbnail creation."""
     # Arrange
     test_dir = os.path.dirname(__file__)
-    test_image_path = os.path.join(test_dir, '../ImageProcessingApp/test-input/sample.jpg')
+    sample_path = '../ImageProcessingApp/test-input/sample.jpg'
+    test_image_path = os.path.join(test_dir, sample_path)
     monkeypatch.setattr(function_app, "local_image_path", test_image_path)
 
     # Mock create_thumbnail to just copy the file
@@ -32,6 +35,7 @@ def test_main_success(monkeypatch, tmp_path):
 
 
 def test_main_missing_image(monkeypatch):
+    """Test handling when the test image is missing."""
     # Arrange
     monkeypatch.setattr(function_app, "local_image_path", "non_existent.jpg")
     req = MagicMock(spec=func.HttpRequest)
@@ -45,12 +49,14 @@ def test_main_missing_image(monkeypatch):
 
 
 def test_main_exception(monkeypatch):
+    """Test error handling when thumbnail creation fails."""
     # Arrange
     def raise_exception(*args, **kwargs):
-        raise Exception("Test exception")
+        raise ValueError("Test exception")
     monkeypatch.setattr(function_app, "create_thumbnail", raise_exception)
     test_dir = os.path.dirname(__file__)
-    test_image_path = os.path.join(test_dir, '../ImageProcessingApp/test-input/sample.jpg')
+    sample_path = '../ImageProcessingApp/test-input/sample.jpg'
+    test_image_path = os.path.join(test_dir, sample_path)
     monkeypatch.setattr(function_app, "local_image_path", test_image_path)
     req = MagicMock(spec=func.HttpRequest)
 

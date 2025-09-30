@@ -1,12 +1,25 @@
-# TODO List for Codebase Review and Tests
+# TODO: Fix Linter Errors
 
-- [x] Review ImageProcessingApp/function_app.py for structure, error handling, and best practices.
-- [x] Review utilities/image_processor.py for robustness and efficiency.
-- [x] Write tests for utilities/image_processor.py (tests/test_image_processor.py).
-- [x] Write tests for ImageProcessingApp/function_app.py (tests/test_function_app.py).
-- [x] Suggest improvements or additions based on review.
-- [x] Provide instructions to run tests and verify coverage.
-- [x] Add logging to function app and utility for better observability.
-- [x] Implement input validation for HTTP request in function app.
-- [x] Add more comprehensive tests with edge cases for image processing.
-- [x] Add CI/CD configuration for automated testing.
+## tests/test_function_app.py
+- [x] Remove unused import pytest
+- [x] Break long lines to under 80 characters
+- [x] Remove unused parameter tmp_path from test_main_success
+- [x] Change broad Exception to ValueError in test_main_exception
+- [x] Add module docstring
+- [x] Add docstrings to all test functions
+
+## tests/test_image_processor.py
+- [x] Remove unused import pytest
+- [x] Break long lines
+- [x] Remove unused parameter tmp_path from test_create_thumbnail_invalid_output_path
+- [x] Add module docstring
+- [x] Add docstrings to all test functions
+
+## utilities/image_processor.py
+- [x] Remove unused import os
+- [x] Reorder imports to standard before third party
+- [x] Change logging f-strings to lazy % formatting
+- [x] Add module docstring
+
+## Final Steps
+- [x] Verify all changes by running linter

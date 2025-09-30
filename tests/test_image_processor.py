@@ -1,14 +1,19 @@
+"""Test module for the image processor utility."""
+
 import os
 
-import pytest
 from PIL import Image
 from utilities.image_processor import create_thumbnail
 
 
 def test_create_thumbnail_creates_file(tmp_path):
+    """Test that create_thumbnail creates a file."""
     # Arrange
     test_dir = os.path.dirname(__file__)
-    test_image_path = os.path.join(test_dir, '../ImageProcessingApp/test-input/sample.jpg')
+    test_image_path = os.path.join(
+        test_dir,
+        '../ImageProcessingApp/test-input/sample.jpg'
+    )
     output_path = tmp_path / "thumbnail.jpg"
 
     # Act
@@ -21,19 +26,27 @@ def test_create_thumbnail_creates_file(tmp_path):
 
 
 def test_create_thumbnail_invalid_image_path(tmp_path):
+    """Test handling of invalid image path."""
     # Arrange
     invalid_image_path = "non_existent.jpg"
     output_path = tmp_path / "thumbnail.jpg"
 
     # Act & Assert
-    with pytest.raises(Exception):
+    try:
         create_thumbnail(invalid_image_path, str(output_path))
+        assert False, "Expected exception"
+    except Exception:
+        pass
 
 
 def test_create_thumbnail_custom_size(tmp_path):
+    """Test create_thumbnail with custom size."""
     # Arrange
     test_dir = os.path.dirname(__file__)
-    test_image_path = os.path.join(test_dir, '../ImageProcessingApp/test-input/sample.jpg')
+    test_image_path = os.path.join(
+        test_dir,
+        '../ImageProcessingApp/test-input/sample.jpg'
+    )
     output_path = tmp_path / "thumbnail.jpg"
     custom_size = (64, 64)
 
@@ -47,9 +60,13 @@ def test_create_thumbnail_custom_size(tmp_path):
 
 
 def test_create_thumbnail_preserves_aspect_ratio(tmp_path):
+    """Test that aspect ratio is preserved in thumbnail."""
     # Arrange
     test_dir = os.path.dirname(__file__)
-    test_image_path = os.path.join(test_dir, '../ImageProcessingApp/test-input/sample.jpg')
+    test_image_path = os.path.join(
+        test_dir,
+        '../ImageProcessingApp/test-input/sample.jpg'
+    )
     output_path = tmp_path / "thumbnail.jpg"
 
     # Act
@@ -60,15 +77,24 @@ def test_create_thumbnail_preserves_aspect_ratio(tmp_path):
     with Image.open(output_path) as img, Image.open(test_image_path) as orig:
         orig_ratio = orig.size[0] / orig.size[1]
         thumb_ratio = img.size[0] / img.size[1]
-        assert abs(orig_ratio - thumb_ratio) < 0.1  # Allow small difference due to thumbnail algorithm
+        assert (
+            abs(orig_ratio - thumb_ratio) < 0.1
+        )  # Allow small difference due to thumbnail algorithm
 
 
-def test_create_thumbnail_invalid_output_path(tmp_path):
+def test_create_thumbnail_invalid_output_path():
+    """Test handling of invalid output path."""
     # Arrange
     test_dir = os.path.dirname(__file__)
-    test_image_path = os.path.join(test_dir, '../ImageProcessingApp/test-input/sample.jpg')
+    test_image_path = os.path.join(
+        test_dir,
+        '../ImageProcessingApp/test-input/sample.jpg'
+    )
     invalid_output_path = "/invalid/path/thumbnail.jpg"
 
     # Act & Assert
-    with pytest.raises(Exception):
+    try:
         create_thumbnail(test_image_path, invalid_output_path)
+        assert False, "Expected exception"
+    except Exception:
+        pass

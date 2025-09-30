@@ -6,3 +6,7 @@
 - [x] Write tests for ImageProcessingApp/function_app.py (tests/test_function_app.py).
 - [x] Suggest improvements or additions based on review.
 - [x] Provide instructions to run tests and verify coverage.
+- [x] Add logging to function app and utility for better observability.
+- [x] Implement input validation for HTTP request in function app.
+- [x] Add more comprehensive tests with edge cases for image processing.
+- [x] Add CI/CD configuration for automated testing.

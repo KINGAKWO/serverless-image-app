@@ -5,7 +5,8 @@
     "ghcr.io/devcontainers/features/azure-cli:1": {},
     "ghcr.io/devcontainers/features/node:1": {}
   },
-  "postCreateCommand": "pip install -r requirements.txt && npm install -g azure-functions-core-tools@4 --unsafe-perm true",
+  "postCreateCommand": "pip install -r requirements.txt && npm install -g @azure/functions-core-tools@4 --unsafe-perm true",
+  "postStartCommand": "echo 'Environment ready! Run func start to test your function.'",
   "forwardPorts": [7071],
   "portsAttributes": {
     "7071": {
@@ -19,7 +20,10 @@
         "ms-azuretools.vscode-azurefunctions",
         "ms-python.python",
         "ms-azuretools.vscode-azureresourcegroups"
-      ]
+      ],
+      "settings": {
+        "azureFunctions.projectSubpath": "."
+      }
     }
   }
 }

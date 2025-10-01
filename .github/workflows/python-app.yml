@@ -1,4 +1,4 @@
-name: Python application
+name: Serverless Image App CI
 
 on:
   push:
@@ -9,17 +9,90 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.9
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
-        python-version: 3.9
-    - name: Install dependencies
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install system dependencies for Pillow
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libjpeg-dev zlib1g-dev
+        
+    - name: Install Azure Functions Core Tools
+      run: |
+        npm install -g @azure/functions-core-tools@4 --unsafe-perm true
+        
+    - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Run tests
+        pip install pytest
+        
+    - name: Verify installations
       run: |
-        pytest tests/
+        python --version
+        func --version
+        pip list | grep -E "(azure|pillow)"
+        
+    - name: Run import tests
+      run: |
+        python -c "
+        # Test basic imports
+        import azure.functions
+        from PIL import Image
+        print('✓ Core imports successful')
+        
+        # Test our custom modules
+        import sys
+        sys.path.append('.')
+        from utilities.image_processor import create_thumbnail
+        print('✓ Custom module imports successful')
+        "
+        
+    - name: Run function validation
+      run: |
+        # Test that our function files are properly structured
+        python -c "
+        import os
+        import json
+        
+        # Check function.json exists and is valid
+        with open('ProcessImage/function.json', 'r') as f:
+            func_config = json.load(f)
+            assert 'bindings' in func_config
+            print('✓ function.json is valid')
+            
+        # Check main function file exists
+        assert os.path.exists('ProcessImage/__init__.py')
+        print('✓ Function main file exists')
+        "
+        
+    - name: Run unit tests
+      run: |
+        python -m pytest tests/ -v --tb=short
+        
+    - name: Test image processing functionality
+      run: |
+        cd tests
+        python -c "
+        import sys
+        sys.path.append('..')
+        from test_image_processor import test_thumbnail_creation
+        result = test_thumbnail_creation()
+        print('Image processing test result:', result)
+        assert result == True
+        "

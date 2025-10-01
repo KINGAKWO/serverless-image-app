@@ -20,14 +20,15 @@ def test_main_success(monkeypatch):
         function_app, "local_image_path", test_image_path
     )
 
-    # Mock create_thumbnail to just copy the file
+    # Mock create_thumbnail to write dummy data
     def mock_create_thumbnail(input_path, output_path):
-        with open(input_path, "rb") as src, open(output_path, "wb") as dst:
-            dst.write(src.read())
+        with open(output_path, "wb") as f:
+            f.write(b"dummy image data")
     monkeypatch.setattr(function_app, "create_thumbnail", mock_create_thumbnail)
 
     # Create a dummy HttpRequest
     req = MagicMock(spec=func.HttpRequest)
+    req.method = 'GET'
 
     # Act
     response = function_app.main(req)
@@ -43,6 +44,7 @@ def test_main_missing_image(monkeypatch):
     # Arrange
     monkeypatch.setattr(function_app, "local_image_path", "non_existent.jpg")
     req = MagicMock(spec=func.HttpRequest)
+    req.method = 'GET'
 
     # Act
     response = function_app.main(req)
@@ -67,6 +69,7 @@ def test_main_exception(monkeypatch):
         function_app, "local_image_path", test_image_path
     )
     req = MagicMock(spec=func.HttpRequest)
+    req.method = 'GET'
 
     # Act
     response = function_app.main(req)
